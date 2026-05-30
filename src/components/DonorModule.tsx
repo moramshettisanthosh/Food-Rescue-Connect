@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { HeartHandshake, Upload, Camera, CheckCircle, Navigation, Sparkles } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../supabaseClient';
 
 interface DonorModuleProps {
   onDonationSuccess: (meals: number, co2: number, water: number, landfill: number) => void;
@@ -70,7 +71,7 @@ export const DonorModule: React.FC<DonorModuleProps> = ({ onDonationSuccess, lan
     }, 2000);
   };
 
-  const handlePublishDonation = () => {
+  const handlePublishDonation = async () => {
     if (!scanResult) return;
     
     // Increment stats in parent
@@ -81,6 +82,27 @@ export const DonorModule: React.FC<DonorModuleProps> = ({ onDonationSuccess, lan
     
     onDonationSuccess(meals, co2, water, landfill);
     setMatchedNgo('Matching Established! Volunteer Rider Rider Sam has accepted pickup coordinates.');
+
+    // Write donation directly into the live cloud database!
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from('donations').insert([{
+          title: scanResult.name,
+          category: scanResult.category,
+          scale: donationType === 'event' ? 'event_bulk' : 'household',
+          quantity_description: scanResult.qty,
+          quantity_meals: meals,
+          freshness_score: scanResult.freshness,
+          consumption_window_hours: parseInt(scanResult.window) || 8,
+          status: 'claimed',
+          latitude: 12.9716,
+          longitude: 77.5946,
+          expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString()
+        }]);
+      } catch (err) {
+        console.error("Supabase Database Insert Error:", err);
+      }
+    }
   };
 
   const getLabel = (key: string) => {

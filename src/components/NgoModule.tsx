@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ShieldAlert, PlusCircle, Flame } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../supabaseClient';
 
 interface AlertItem {
   id: string;
@@ -42,7 +43,7 @@ export const NgoModule: React.FC = () => {
     }, 5000);
   };
 
-  const handleAddAlert = (e: React.FormEvent) => {
+  const handleAddAlert = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newLocation || !newShortage) return;
 
@@ -57,6 +58,20 @@ export const NgoModule: React.FC = () => {
     setAlerts([freshAlert, ...alerts]);
     setNewLocation('');
     setNewShortage('');
+
+    // Write shortage directly into the live cloud database!
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.from('community_shortages').insert([{
+          description: `Resource needed: ${newShortage} at ${newLocation}`,
+          urgency: newUrgency,
+          meals_needed: Number(meals),
+          is_resolved: false
+        }]);
+      } catch (err) {
+        console.error("Supabase Database Insert Error:", err);
+      }
+    }
   };
 
   return (
