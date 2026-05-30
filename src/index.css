@@ -797,3 +797,152 @@ body.large-text-mode h3 { font-size: 1.5rem; }
   letter-spacing: 2px;
   margin-bottom: 24px;
 }
+
+/* ==========================================================================
+   MOBILE RESPONSIVE ADAPTATIONS
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Stack sidebar and main content vertically */
+  .app-container {
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Transform Sidebar into an ultra-premium Bottom Navigation Bar */
+  .sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 72px;
+    flex-direction: row;
+    padding: 0 10px;
+    border-right: none;
+    border-top: 1px solid var(--card-border);
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 0;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  /* Hide Desktop-only Sidebar decorations */
+  .logo-container,
+  .sidebar-footer {
+    display: none !important;
+  }
+
+  /* Flex navbar links horizontally */
+  .nav-links {
+    flex-direction: row !important;
+    width: 100% !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    gap: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Make nav keys stack (Icon on top, small label below) */
+  .nav-item {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 6px 4px !important;
+    gap: 4px !important;
+    font-size: 0.65rem !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: var(--border-radius-sm) !important;
+    color: var(--text-secondary) !important;
+    flex: 1;
+    height: 100%;
+  }
+
+  .nav-item:hover,
+  .nav-item.active {
+    color: var(--accent-emerald) !important;
+    border-color: transparent !important;
+    background: rgba(16, 185, 129, 0.08) !important;
+  }
+
+  .nav-item.active {
+    border-left: none !important;
+    border-bottom: 3px solid var(--accent-emerald) !important;
+    border-radius: 0 !important;
+  }
+
+  .nav-item svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .nav-item span {
+    font-size: 0.65rem !important;
+    font-weight: 600;
+  }
+
+  /* Adjust Main Content to occupy full width and leave space for bottom navbar */
+  .main-content {
+    flex: 1;
+    width: 100vw;
+    height: calc(100vh - 72px) !important;
+    overflow-y: auto;
+    padding-bottom: 30px;
+  }
+
+  /* Responsive Dashboard Header */
+  .dashboard-header {
+    height: auto !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 16px 20px !important;
+    gap: 14px !important;
+  }
+
+  .header-actions {
+    width: 100% !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+  }
+
+  .role-selector {
+    flex: 1 !important;
+    justify-content: space-around !important;
+  }
+
+  .role-btn {
+    padding: 6px 12px !important;
+    font-size: 0.75rem !important;
+    flex: 1;
+    text-align: center;
+  }
+
+  /* Mobile Grid Adaptation: force full-width cards */
+  .dashboard-grid {
+    padding: 16px !important;
+    gap: 16px !important;
+  }
+
+  .col-12, .col-8, .col-7, .col-6, .col-5, .col-4, .col-3 {
+    grid-column: span 12 !important;
+  }
+
+  /* Form adjustments */
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  /* Chat Drawer adjustments for mobile */
+  .chat-drawer {
+    width: 90vw !important;
+    bottom: 84px !important;
+    right: 5vw !important;
+    height: 60vh !important;
+  }
+}
+
