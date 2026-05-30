@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  client-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - express-backend
+
+  express-backend:
+    image: node:20-alpine
+    working_dir: /usr/src/app
+    command: npm run start:prod
+    environment:
+      - DATABASE_URL=postgres://rescue_admin:DbSecPass442@postgres-db:5432/rescue_connect
+      - REDIS_URL=redis://redis-cache:6379
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres-db
+      - redis-cache
+
+  postgres-db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=rescue_admin
+      - POSTGRES_PASSWORD=DbSecPass442
+      - POSTGRES_DB=rescue_connect
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis-cache:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
