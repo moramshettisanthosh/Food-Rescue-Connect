@@ -86,7 +86,7 @@ export const DonorModule: React.FC<DonorModuleProps> = ({ onDonationSuccess, lan
     // Write donation directly into the live cloud database!
     if (isSupabaseConfigured) {
       try {
-        await supabase.from('donations').insert([{
+        const { error } = await supabase.from('donations').insert([{
           title: scanResult.name,
           category: scanResult.category,
           scale: donationType === 'event' ? 'event_bulk' : 'household',
@@ -99,8 +99,13 @@ export const DonorModule: React.FC<DonorModuleProps> = ({ onDonationSuccess, lan
           longitude: 77.5946,
           expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString()
         }]);
-      } catch (err) {
-        console.error("Supabase Database Insert Error:", err);
+        if (error) {
+          alert("Database Alert: " + error.message + " | Details: " + (error.details || 'None'));
+        } else {
+          alert("Success! Donation has been written live to your Supabase PostgreSQL database!");
+        }
+      } catch (err: any) {
+        alert("System Database Connection Error: " + err.message);
       }
     }
   };

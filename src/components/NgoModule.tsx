@@ -62,14 +62,19 @@ export const NgoModule: React.FC = () => {
     // Write shortage directly into the live cloud database!
     if (isSupabaseConfigured) {
       try {
-        await supabase.from('community_shortages').insert([{
+        const { error } = await supabase.from('community_shortages').insert([{
           description: `Resource needed: ${newShortage} at ${newLocation}`,
           urgency: newUrgency,
           meals_needed: Number(meals),
           is_resolved: false
         }]);
-      } catch (err) {
-        console.error("Supabase Database Insert Error:", err);
+        if (error) {
+          alert("Database Alert: " + error.message + " | Details: " + (error.details || 'None'));
+        } else {
+          alert("Success! Shortage has been written live to your Supabase PostgreSQL database!");
+        }
+      } catch (err: any) {
+        alert("System Database Connection Error: " + err.message);
       }
     }
   };
